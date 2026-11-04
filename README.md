@@ -40,7 +40,7 @@ Open **Control Center → Screen Mirroring → pick your TV** and your screen ap
 
 1. On your Android TV install **Downloader** (by AFTVnews) from the Play Store.
 2. In *Settings → Allow Downloader to install unknown apps* switch it **on**.
-3. Open Downloader and type this URL:
+3. Open Downloader and type this URL or this code (6322405):
 
    ```
    https://github.com/Traxbay/airplay-receiver-tv/releases/latest/download/AirPlay-Receiver.apk

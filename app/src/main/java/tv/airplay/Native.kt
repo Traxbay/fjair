@@ -12,6 +12,7 @@ object Native {
         fun onAudio(buf: ByteBuffer, ct: Int, ptsUs: Long)
         fun onFlush()
         fun onVolume(db: Float)
+        fun onClient(name: String, model: String)
     }
 
     @Volatile var listener: Listener? = null
@@ -45,4 +46,5 @@ object Native {
     @JvmStatic fun onAudio(b: ByteBuffer, ct: Int, ptsUs: Long) { listener?.onAudio(b, ct, ptsUs) }
     @JvmStatic fun onFlush() { listener?.onFlush() }
     @JvmStatic fun onVolume(db: Float) { listener?.onVolume(db) }
+    @JvmStatic fun onClient(name: ByteArray, model: ByteArray) { listener?.onClient(String(name), String(model)) }
 }

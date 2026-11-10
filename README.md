@@ -23,16 +23,17 @@ Open **Control Center → Screen Mirroring → pick your TV** and your screen ap
 - 🔍 **Appears in Apple's own menu** — nothing to install on the iPhone/iPad/Mac
 - 🖥️ **Real screen mirroring** — real H.264 video decoded by the TV's hardware decoder
 - 🔊 **Audio too** — AAC-ELD / AAC-LC, volume and mute follow your iPhone
-- 🪶 **Very light** — one screen, no ads, no accounts, no analytics, no animations
+- 🪶 **Very light** — one screen, no ads, no accounts, no analytics
+- 👆 **Shows people where to tap** — an animated Control Center guide points at the Screen Mirroring button
 - 📐 **Keeps aspect ratio** — portrait and landscape are letterboxed on the TV
 
 > ⚠️ Not affiliated with Apple. "AirPlay" is a trademark of Apple Inc.
 
 ## 📸 How it looks
 
-| Idle | Mirroring |
-|---|---|
-| Dark screen with the app name, the TV name, the status (*Waiting for connection / Connected*) and one line of instructions | The mirrored screen takes over the whole TV; the info screen returns when you disconnect |
+![AirPlay Receiver home screen on an Android TV](docs/screenshot.png)
+
+The TV waits on a dark home screen with its name on a pairing ticket, a pulsing status light and an animated Control Center guide. When mirroring starts, your screen takes over the whole TV; the home screen returns when you disconnect.
 
 ## 🚀 Install on your TV
 
@@ -161,6 +162,10 @@ then run `./gradlew assembleRelease`.
 - [ ] Audio-video sync using the sender's timestamps
 - [ ] Foreground service so mirroring survives the app leaving the screen
 - [ ] iPad and macOS test reports
+
+## 📬 Contact
+
+Questions, bug reports or business enquiries: **[abdullahf.si](https://abdullahf.si)** — or open an issue on this repo.
 
 ## 📜 License & credits
 

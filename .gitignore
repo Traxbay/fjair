@@ -7,3 +7,4 @@ local.properties
 signing.properties
 *.jks
 *.keystore
+*.apk

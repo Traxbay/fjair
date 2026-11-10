@@ -11,8 +11,8 @@ android {
         applicationId = "tv.airplay.receiver"
         minSdk = 21
         targetSdk = 34
-        versionCode = 1
-        versionName = "0.1"
+        versionCode = 2
+        versionName = "0.2"
         externalNativeBuild { cmake { arguments += "-DANDROID_STL=c++_shared" } }
         ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
     }

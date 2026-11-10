@@ -11,13 +11,10 @@ import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.TextView
 import java.nio.ByteBuffer
 
 class MainActivity : Activity(), Native.Listener {
-    private lateinit var status: TextView
-    private lateinit var info: View
+    private lateinit var home: HomeView
     private lateinit var video: SurfaceView
     private lateinit var root: FrameLayout
     private lateinit var adv: Advertiser
@@ -25,15 +22,12 @@ class MainActivity : Activity(), Native.Listener {
     @Volatile private var audio: AudioDecoder? = null
     @Volatile private var volume = 0f
     @Volatile private var hasSurface = false
+    @Volatile private var client: String? = null
     private var vw = 0
     private var vh = 0
 
     override fun onCreate(b: Bundle?) {
         super.onCreate(b)
-        fun tv(t: String, sp: Float) = TextView(this).apply {
-            text = t; textSize = sp; setTextColor(Color.WHITE); gravity = Gravity.CENTER
-        }
-        status = tv("Waiting for connection", 28f)
         video = SurfaceView(this).apply {
             holder.addCallback(object : SurfaceHolder.Callback {
                 override fun surfaceCreated(h: SurfaceHolder) { hasSurface = true }
@@ -41,26 +35,19 @@ class MainActivity : Activity(), Native.Listener {
                 override fun surfaceDestroyed(h: SurfaceHolder) { hasSurface = false; stopVideo() }
             })
         }
-        info = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER
-            setBackgroundColor(Color.rgb(16, 16, 16))
-            addView(tv("AirPlay Receiver", 40f))
-            addView(tv(Build.MODEL, 24f))
-            addView(status)
-            addView(tv("Open Screen Mirroring on your Apple device and select this TV.", 20f))
-        }
+        adv = Advertiser(this, Build.MODEL)
+        home = HomeView(this, Build.MODEL, adv.deviceId).apply { setAddress(localIp()) }
         root = FrameLayout(this).apply {
             setBackgroundColor(Color.BLACK)
             addView(video, FrameLayout.LayoutParams(-1, -1, Gravity.CENTER))
-            addView(info, FrameLayout.LayoutParams(-1, -1))
+            addView(home, FrameLayout.LayoutParams(-1, -1))
             addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> fit() }
         }
         setContentView(root)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        adv = Advertiser(this, Build.MODEL)
         val port = Native.start(Build.MODEL, adv.deviceId, filesDir.resolve("ed25519.key").path)
-        if (port < 0) { status.text = "Receiver failed to start ($port)"; return }
+        if (port < 0) { home.show(HomeView.State.ERROR, "Receiver failed to start", "Restart the app. If it keeps failing, restart the TV. (code $port)"); return }
         Native.listener = this
         adv.start(port) { Log.i("AirPlay", it) }
     }
@@ -77,22 +64,46 @@ class MainActivity : Activity(), Native.Listener {
     private fun stopVideo() { decoder?.release(); decoder = null }
     private fun stopAudio() { audio?.release(); audio = null }
 
-    override fun onConn(open: Boolean) = runOnUiThread {
-        if (open) status.text = "Connected"
-        else { stopVideo(); stopAudio(); status.text = "Waiting for connection"; info.visibility = View.VISIBLE }
+    /** First non-loopback IPv4 address (Wi-Fi or Ethernet). */
+    private fun localIp(): String? = try {
+        java.net.NetworkInterface.getNetworkInterfaces().toList().filter { it.isUp && !it.isLoopback }
+            .flatMap { it.inetAddresses.toList() }.firstOrNull { it is java.net.Inet4Address }?.hostAddress
+    } catch (_: Exception) { null }
+
+    private fun showHome(s: HomeView.State, head: String, body: String) = runOnUiThread {
+        home.show(s, head, body, client); home.visibility = View.VISIBLE
+    }
+
+    override fun onClient(name: String, model: String) {
+        client = name
+        if (decoder == null) showHome(HomeView.State.CONNECTING, "Connecting…", "$name is setting up screen mirroring.")
+    }
+
+    override fun onConn(open: Boolean) {
+        if (open) return
+        stopVideo(); stopAudio()
+        val who = client ?: "Your device"
+        client = null
+        showHome(HomeView.State.DISCONNECTED, "Disconnected", "$who stopped mirroring.")
+        root.postDelayed({
+            if (decoder == null && client == null) {
+                home.setAddress(localIp())
+                home.show(HomeView.State.WAITING, "Waiting for connection", "Open Screen Mirroring on your Apple device and select this TV.")
+            }
+        }, 4000)
     }
 
     override fun onVideoFormat(hevc: Boolean, w: Int, h: Int) {
         stopVideo()
-        runOnUiThread { vw = w; vh = h; fit(); info.visibility = View.GONE }
+        runOnUiThread { vw = w; vh = h; fit(); home.show(HomeView.State.CONNECTED, "Mirroring", "", client); home.visibility = View.GONE }
         if (!hasSurface) { Log.w("AirPlay", "no surface for video"); return }
         decoder = try {
             VideoDecoder(video.holder.surface, hevc, w, h,
                 { cw, ch -> runOnUiThread { vw = cw; vh = ch; fit() } },
-                { m -> Log.e("AirPlay", "decoder: $m"); runOnUiThread { status.text = "Video decoder error"; info.visibility = View.VISIBLE } })
+                { m -> Log.e("AirPlay", "decoder: $m"); showHome(HomeView.State.ERROR, "Video stopped", "The TV's video decoder failed. Stop and start Screen Mirroring again.") })
         } catch (e: Exception) {
             Log.e("AirPlay", "decoder init failed", e)
-            runOnUiThread { status.text = "Hardware decoder unavailable"; info.visibility = View.VISIBLE }
+            showHome(HomeView.State.ERROR, "Video not supported", "This TV has no hardware decoder for the stream (${if (hevc) "HEVC" else "H.264"} ${w}x$h).")
             null
         }
     }

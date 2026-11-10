@@ -11,7 +11,7 @@
 #define TAG "AirPlayNative"
 static JavaVM *vm;
 static jclass cls;
-static jmethodID m_conn, m_vfmt, m_video, m_afmt, m_audio, m_flush, m_vol;
+static jmethodID m_conn, m_vfmt, m_video, m_afmt, m_audio, m_flush, m_vol, m_client;
 static raop_t *raop;
 static dnssd_t *dnssd;
 static char pkhex[80];
@@ -33,6 +33,13 @@ static void log_cb(void *c, int level, const char *msg) {
     __android_log_write(p, TAG, msg);
 }
 
+static jbyteArray bytes(JNIEnv *e, const char *s) {
+    int n = s ? (int) strnlen(s, 256) : 0;
+    jbyteArray a = (*e)->NewByteArray(e, n);
+    if (a && n) (*e)->SetByteArrayRegion(e, a, 0, n, (const jbyte *) s);
+    return a;
+}
+
 static void conn_init(void *c) { UP((*e)->CallStaticVoidMethod(e, cls, m_conn, JNI_TRUE)); }
 static void conn_destroy(void *c) { UP((*e)->CallStaticVoidMethod(e, cls, m_conn, JNI_FALSE)); }
 static void conn_reset(void *c, int reason) { UP((*e)->CallStaticVoidMethod(e, cls, m_conn, JNI_FALSE)); }
@@ -40,6 +47,10 @@ static void conn_feedback(void *c) {}
 static void report_client_request(void *c, char *id, char *model, char *name, bool *admit) {
     __android_log_print(ANDROID_LOG_INFO, TAG, "client %s (%s) id=%s", name, model, id);
     *admit = true;
+    /* names arrive from the network: pass raw bytes, Kotlin decodes leniently (NewStringUTF aborts on bad UTF-8) */
+    UP(jbyteArray n = bytes(e, name); jbyteArray m = bytes(e, model);
+       (*e)->CallStaticVoidMethod(e, cls, m_client, n, m);
+       (*e)->DeleteLocalRef(e, n); (*e)->DeleteLocalRef(e, m));
 }
 static int video_set_codec_and_size(void *c, video_codec_t codec, unsigned short ws, unsigned short hs,
                                     unsigned short xo, unsigned short yo, unsigned short w, unsigned short h) {
@@ -83,6 +94,7 @@ JNIEXPORT jint JNICALL Java_tv_airplay_Native_start(JNIEnv *e, jclass k, jstring
     m_audio = (*e)->GetStaticMethodID(e, k, "onAudio", "(Ljava/nio/ByteBuffer;IJ)V");
     m_flush = (*e)->GetStaticMethodID(e, k, "onFlush", "()V");
     m_vol = (*e)->GetStaticMethodID(e, k, "onVolume", "(F)V");
+    m_client = (*e)->GetStaticMethodID(e, k, "onClient", "([B[B)V");
 
     const char *name = (*e)->GetStringUTFChars(e, jname, NULL);
     const char *mac = (*e)->GetStringUTFChars(e, jmac, NULL);

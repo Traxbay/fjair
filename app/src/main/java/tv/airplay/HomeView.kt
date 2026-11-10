@@ -15,6 +15,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import kotlin.math.PI
@@ -58,9 +59,13 @@ class HomeView(ctx: Context, tvName: String, deviceId: String) : FrameLayout(ctx
         // wordmark, top-left: name over a muted subtitle
         addView(LinearLayout(ctx).apply {
             orientation = LinearLayout.VERTICAL
-            addView(text(24f, INK, bold).apply { text = "AirPlay Receiver"; letterSpacing = -0.02f })
-            addView(text(14f, MUTED, regular).apply { text = "Screen mirroring for this TV" })
-        }, lp(-2, -2, Gravity.TOP or Gravity.START).margins(48, 40, 0, 0))
+            addView(ImageView(ctx).apply {
+                setImageResource(R.drawable.fjair_wordmark); contentDescription = "FJAir"
+                scaleType = ImageView.ScaleType.FIT_START; adjustViewBounds = true
+            }, LinearLayout.LayoutParams(-2, dp(34)).apply { marginStart = -dp(3) })
+            addView(text(14f, MUTED, regular).apply { text = "Screen mirroring for this TV · works with AirPlay" },
+                LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(2) })
+        }, lp(-2, -2, Gravity.TOP or Gravity.START).margins(48, 36, 0, 0))
 
         // network chip, top-right
         addView(ipText.apply {
@@ -316,7 +321,7 @@ private class TicketView(ctx: Context, private val name: String, private val ser
         c.drawText("SCREEN MIRRORING", pad, pad + label.textSize, label)
         val shown = TextUtils.ellipsize(name, big, stub - 2 * pad, TextUtils.TruncateAt.END).toString()
         c.drawText(shown, pad, h * 0.56f, big)
-        c.drawText("AIRPLAY RECEIVER", pad, h - pad - label.textSize - 6 * d, label)
+        c.drawText("FJAIR · AIRPLAY", pad, h - pad - label.textSize - 6 * d, label)
         c.drawText("NO. ${serial.replace(":", "")}", pad, h - pad, label)
 
         // stub: barcode + "ADMIT 1"

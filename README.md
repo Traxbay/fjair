@@ -1,6 +1,8 @@
 <div align="center">
 
-# 📺 AirPlay Receiver for Android TV
+<img src="docs/brand/fjair-banner.svg" alt="FJAir" width="480">
+
+# FJAir — AirPlay screen mirroring for Android TV
 
 **Mirror your iPhone, iPad or Mac to an Android TV — no extra app on the Apple device, no cables.**
 
@@ -16,7 +18,7 @@
 
 ## ✨ What is it?
 
-A tiny, no-frills Android TV app that makes your TV show up in the **native Screen Mirroring menu** of iOS and macOS — just like an AirPlay-enabled LG or Samsung TV.
+**FJAir** is a tiny, no-frills Android TV app that makes your TV show up in the **native Screen Mirroring menu** of iOS and macOS — just like an AirPlay-enabled LG or Samsung TV.
 
 Open **Control Center → Screen Mirroring → pick your TV** and your screen appears on the TV, with sound.
 
@@ -31,7 +33,7 @@ Open **Control Center → Screen Mirroring → pick your TV** and your screen ap
 
 ## 📸 How it looks
 
-![AirPlay Receiver home screen on an Android TV](docs/screenshot.png)
+![FJAir home screen on an Android TV](docs/screenshot.png)
 
 The TV waits on a dark home screen with its name on a pairing ticket, a pulsing status light and an animated Control Center guide. When mirroring starts, your screen takes over the whole TV; the home screen returns when you disconnect.
 
@@ -46,7 +48,7 @@ The TV waits on a dark home screen with its name on a pairing ticket, a pulsing 
    ```
    https://github.com/Traxbay/airplay-receiver-tv/releases/latest/download/AirPlay-Receiver.apk
    ```
-4. Press **Go**, wait for the download, then **Install** → **Open**.
+4. Press **Go**, wait for the download, then **Install** → **Open**. The app appears on your TV as **FJAir**.
 
 ### Option B — with `adb` from a PC 🔌
 
@@ -61,7 +63,7 @@ The TV waits on a dark home screen with its name on a pairing ticket, a pulsing 
 ## 🎬 How to use it
 
 1. Put the iPhone / iPad / Mac on the **same Wi-Fi network** as the TV.
-2. Open **AirPlay Receiver** on the TV and leave it in the foreground.
+2. Open **FJAir** on the TV and leave it in the foreground.
 3. On the Apple device: **Control Center → Screen Mirroring** → choose your TV.
 4. Stop mirroring from the same menu — the TV returns to the waiting screen.
 
@@ -162,6 +164,26 @@ then run `./gradlew assembleRelease`.
 - [ ] Audio-video sync using the sender's timestamps
 - [ ] Foreground service so mirroring survives the app leaving the screen
 - [ ] iPad and macOS test reports
+
+## 🎨 Brand
+
+| | |
+|---|---|
+| <img src="docs/brand/fjair-icon.svg" width="96" alt="FJAir icon"> | **Mark** — the orange pairing ticket from the TV screen, with an "FJ" monogram. Used as the launcher icon. |
+| <img src="docs/brand/fjair-wordmark.svg" width="150" alt="FJAir wordmark"> | **Wordmark** — rounded monoline letters drawn as paths (no font licence needed): "FJ" in ink white, "Air" in signal orange. |
+
+| Colour | Hex | Use |
+|---|---|---|
+| ⬛ Night | `#111111` | backgrounds |
+| 🟧 Signal orange | `#FF5A36` | ticket, accents, "Air" |
+| ⬜ Ink white | `#F2F2F0` | text, "FJ" |
+| 🟫 Ticket ink | `#1C0D08` | text and marks on orange |
+
+Source files are in [`docs/brand/`](docs/brand). The Android icon, TV banner and wordmark drawables are generated from the same shapes by `docs/brand/gen_res.py`:
+
+```bash
+python docs/brand/gen_res.py app/src/main/res
+```
 
 ## 📬 Contact
 

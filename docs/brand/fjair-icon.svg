@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="512" height="512">
+  <title>FJAir icon</title>
+  <rect x="6" y="6" width="96" height="96" rx="24" fill="#111111"/>
+  <g transform="rotate(-8 54 54)">
+    <path d="M29,34 H79 A7,7 0 0 1 86,41 V67 A7,7 0 0 1 79,74 H29 A7,7 0 0 1 22,67 V41 A7,7 0 0 1 29,34 Z" fill="#FF5A36"/>
+    <circle cx="70" cy="34" r="4.5" fill="#111111"/>
+    <circle cx="70" cy="74" r="4.5" fill="#111111"/>
+    <g fill="#1C0D08" fill-opacity="0.35">
+      <rect x="69.4" y="41" width="1.2" height="2.5"/><rect x="69.4" y="46" width="1.2" height="2.5"/>
+      <rect x="69.4" y="51" width="1.2" height="2.5"/><rect x="69.4" y="56" width="1.2" height="2.5"/>
+      <rect x="69.4" y="61" width="1.2" height="2.5"/><rect x="69.4" y="66" width="1.2" height="2.5"/>
+    </g>
+    <g fill="#1C0D08">
+      <rect x="74" y="42" width="1.8" height="24"/><rect x="77.2" y="42" width="1" height="24"/>
+      <rect x="79.6" y="42" width="1.8" height="24"/><rect x="82.4" y="42" width="0.9" height="24"/>
+    </g>
+    <path d="M32,44 V64 M32,44 H43 M32,53.5 H40.5 M60,44 V58.5 A5.5,5.5 0 0 1 49,58.5" fill="none" stroke="#1C0D08" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

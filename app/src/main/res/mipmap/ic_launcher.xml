@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- generated from docs/brand/*.svg -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="48dp" android:height="48dp" android:viewportWidth="108" android:viewportHeight="108">
+<path android:fillColor="#FF111111" android:pathData="M30,6 H78 A24,24 0 0 1 102,30 V78 A24,24 0 0 1 78,102 H30 A24,24 0 0 1 6,78 V30 A24,24 0 0 1 30,6 Z"/>
+<group android:pivotX="54" android:pivotY="54" android:rotation="-8" android:scaleX="1" android:scaleY="1" android:translateX="0" android:translateY="0">
+<path android:fillColor="#FFFF5A36" android:pathData="M29,34 H79 A7,7 0 0 1 86,41 V67 A7,7 0 0 1 79,74 H29 A7,7 0 0 1 22,67 V41 A7,7 0 0 1 29,34 Z"/>
+<path android:fillColor="#FF111111" android:pathData="M65.5,34 a4.5,4.5 0 1,0 9.0,0 a4.5,4.5 0 1,0 -9.0,0 Z M65.5,74 a4.5,4.5 0 1,0 9.0,0 a4.5,4.5 0 1,0 -9.0,0 Z"/>
+<path android:fillColor="#FF1C0D08" android:fillAlpha="0.35" android:pathData="M69.4,41 h1.2 v2.5 h-1.2 Z M69.4,46 h1.2 v2.5 h-1.2 Z M69.4,51 h1.2 v2.5 h-1.2 Z M69.4,56 h1.2 v2.5 h-1.2 Z M69.4,61 h1.2 v2.5 h-1.2 Z M69.4,66 h1.2 v2.5 h-1.2 Z"/>
+<path android:fillColor="#FF1C0D08" android:pathData="M74,42 h1.8 v24 h-1.8 Z M77.2,42 h1 v24 h-1 Z M79.6,42 h1.8 v24 h-1.8 Z M82.4,42 h0.9 v24 h-0.9 Z"/>
+<path android:strokeColor="#FF1C0D08" android:strokeWidth="4.2" android:strokeLineCap="round" android:strokeLineJoin="round" android:pathData="M32,44 V64 M32,44 H43 M32,53.5 H40.5 M60,44 V58.5 A5.5,5.5 0 0 1 49,58.5"/>
+</group>
+</vector>

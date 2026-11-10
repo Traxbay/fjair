@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -10 146 60" width="438" height="180">
+  <title>FJAir wordmark</title>
+  <g fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0,0 V40 M0,0 H22 M0,19 H17 M48,0 V28 A10,10 0 0 1 28,28" stroke="#F2F2F0"/>
+    <path d="M62,40 L76,0 L90,40 M66.9,26 H85.1 M104,16 V40 M116,16 V40 M116,27 C116,20 121,16 129,16" stroke="#FF5A36"/>
+  </g>
+  <circle cx="104" cy="3" r="4.4" fill="#FF5A36"/>
+</svg>

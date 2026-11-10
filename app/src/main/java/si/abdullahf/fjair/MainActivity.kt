@@ -1,4 +1,4 @@
-package tv.airplay
+package si.abdullahf.fjair
 
 import android.app.Activity
 import android.graphics.Color
@@ -49,7 +49,7 @@ class MainActivity : Activity(), Native.Listener {
         val port = Native.start(Build.MODEL, adv.deviceId, filesDir.resolve("ed25519.key").path)
         if (port < 0) { home.show(HomeView.State.ERROR, "Receiver failed to start", "Restart the app. If it keeps failing, restart the TV. (code $port)"); return }
         Native.listener = this
-        adv.start(port) { Log.i("AirPlay", it) }
+        adv.start(port) { Log.i("FJAir", it) }
     }
 
     /** Letterbox the surface to the video's aspect ratio. */
@@ -96,13 +96,13 @@ class MainActivity : Activity(), Native.Listener {
     override fun onVideoFormat(hevc: Boolean, w: Int, h: Int) {
         stopVideo()
         runOnUiThread { vw = w; vh = h; fit(); home.show(HomeView.State.CONNECTED, "Mirroring", "", client); home.visibility = View.GONE }
-        if (!hasSurface) { Log.w("AirPlay", "no surface for video"); return }
+        if (!hasSurface) { Log.w("FJAir", "no surface for video"); return }
         decoder = try {
             VideoDecoder(video.holder.surface, hevc, w, h,
                 { cw, ch -> runOnUiThread { vw = cw; vh = ch; fit() } },
-                { m -> Log.e("AirPlay", "decoder: $m"); showHome(HomeView.State.ERROR, "Video stopped", "The TV's video decoder failed. Stop and start Screen Mirroring again.") })
+                { m -> Log.e("FJAir", "decoder: $m"); showHome(HomeView.State.ERROR, "Video stopped", "The TV's video decoder failed. Stop and start Screen Mirroring again.") })
         } catch (e: Exception) {
-            Log.e("AirPlay", "decoder init failed", e)
+            Log.e("FJAir", "decoder init failed", e)
             showHome(HomeView.State.ERROR, "Video not supported", "This TV has no hardware decoder for the stream (${if (hevc) "HEVC" else "H.264"} ${w}x$h).")
             null
         }
@@ -111,11 +111,11 @@ class MainActivity : Activity(), Native.Listener {
     override fun onVideo(buf: ByteBuffer, ptsUs: Long) { decoder?.feed(buf, ptsUs) }
     override fun onAudioFormat(ct: Int, spf: Int) {
         stopAudio()
-        Log.i("AirPlay", "audio ct=$ct spf=$spf")
-        if (ct != 4 && ct != 8) { Log.e("AirPlay", "unsupported audio codec ct=$ct"); return }
+        Log.i("FJAir", "audio ct=$ct spf=$spf")
+        if (ct != 4 && ct != 8) { Log.e("FJAir", "unsupported audio codec ct=$ct"); return }
         audio = try {
-            AudioDecoder(ct) { m -> Log.e("AirPlay", "audio: $m"); stopAudio() }.also { it.setVolume(volume) }
-        } catch (e: Exception) { Log.e("AirPlay", "audio init failed", e); null }
+            AudioDecoder(ct) { m -> Log.e("FJAir", "audio: $m"); stopAudio() }.also { it.setVolume(volume) }
+        } catch (e: Exception) { Log.e("FJAir", "audio init failed", e); null }
     }
 
     override fun onAudio(buf: ByteBuffer, ct: Int, ptsUs: Long) { audio?.feed(buf, ptsUs) }

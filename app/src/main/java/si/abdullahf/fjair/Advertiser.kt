@@ -1,4 +1,4 @@
-package tv.airplay
+package si.abdullahf.fjair
 
 import android.content.Context
 import android.net.nsd.NsdManager
@@ -10,7 +10,7 @@ import java.security.SecureRandom
 class Advertiser(ctx: Context, private val name: String) {
     private val nsd = ctx.getSystemService(Context.NSD_SERVICE) as NsdManager
     private val lock = (ctx.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager)
-        .createMulticastLock("airplay").apply { setReferenceCounted(false) }
+        .createMulticastLock("fjair").apply { setReferenceCounted(false) }
     private val prefs = ctx.getSharedPreferences("id", Context.MODE_PRIVATE)
     private val listeners = ArrayList<NsdManager.RegistrationListener>()
 

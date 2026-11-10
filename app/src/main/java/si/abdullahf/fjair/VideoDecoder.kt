@@ -1,4 +1,4 @@
-package tv.airplay
+package si.abdullahf.fjair
 
 import android.media.MediaCodec
 import android.media.MediaFormat

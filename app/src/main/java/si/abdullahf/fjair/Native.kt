@@ -1,8 +1,8 @@
-package tv.airplay
+package si.abdullahf.fjair
 
 import java.nio.ByteBuffer
 
-/** Bridge to libairplay (UxPlay protocol core). Callbacks arrive on native threads; buffers are valid only during the call. */
+/** Bridge to libfjair (UxPlay protocol core). Callbacks arrive on native threads; buffers are valid only during the call. */
 object Native {
     interface Listener {
         fun onConn(open: Boolean)
@@ -17,7 +17,7 @@ object Native {
 
     @Volatile var listener: Listener? = null
 
-    init { System.loadLibrary("airplay") }
+    init { System.loadLibrary("fjair") }
 
     /** Returns the RTSP port, or a negative error. */
     @JvmStatic external fun start(name: String, mac: String, keyFile: String): Int

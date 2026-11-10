@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- generated from docs/brand/*.svg -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="146dp" android:height="60dp" android:viewportWidth="146" android:viewportHeight="60">
-<group android:translateX="6" android:translateY="10">
-<path android:strokeColor="#FFF2F2F0" android:strokeWidth="7" android:strokeLineCap="round" android:strokeLineJoin="round" android:pathData="M0,0 V40 M0,0 H22 M0,19 H17 M48,0 V28 A10,10 0 0 1 28,28"/>
-<path android:strokeColor="#FFFF5A36" android:strokeWidth="7" android:strokeLineCap="round" android:strokeLineJoin="round" android:pathData="M62,40 L76,0 L90,40 M66.9,26 H85.1 M104,16 V40 M116,16 V40 M116,27 C116,20 121,16 129,16"/>
-<path android:fillColor="#FFFF5A36" android:pathData="M99.6,3 a4.4,4.4 0 1,0 8.8,0 a4.4,4.4 0 1,0 -8.8,0 Z"/>
-</group>
-</vector>

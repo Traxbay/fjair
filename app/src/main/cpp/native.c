@@ -1,4 +1,4 @@
-/* JNI bridge: runs UxPlay's RAOP/AirPlay server and forwards decrypted audio/video to Kotlin (tv.airplay.Native). */
+/* JNI bridge: runs UxPlay's RAOP/AirPlay server and forwards decrypted audio/video to Kotlin (si.abdullahf.fjair.Native). */
 #include <jni.h>
 #include <android/log.h>
 #include <stdlib.h>
@@ -8,7 +8,7 @@
 #include "dnssd.h"
 #include "logger.h"
 
-#define TAG "AirPlayNative"
+#define TAG "FJAirNative"
 static JavaVM *vm;
 static jclass cls;
 static jmethodID m_conn, m_vfmt, m_video, m_afmt, m_audio, m_flush, m_vol, m_client;
@@ -84,7 +84,7 @@ static raop_callbacks_t cbs;
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *v, void *r) { vm = v; return JNI_VERSION_1_6; }
 
 /* Returns the RTSP port, or a negative error code. */
-JNIEXPORT jint JNICALL Java_tv_airplay_Native_start(JNIEnv *e, jclass k, jstring jname, jstring jmac, jstring jkey) {
+JNIEXPORT jint JNICALL Java_si_abdullahf_fjair_Native_start(JNIEnv *e, jclass k, jstring jname, jstring jmac, jstring jkey) {
     if (raop) return -1;
     cls = (*e)->NewGlobalRef(e, k);
     m_conn = (*e)->GetStaticMethodID(e, k, "onConn", "(Z)V");
@@ -145,17 +145,17 @@ out:
     return rc;
 }
 
-JNIEXPORT jstring JNICALL Java_tv_airplay_Native_publicKey(JNIEnv *e, jclass k) {
+JNIEXPORT jstring JNICALL Java_si_abdullahf_fjair_Native_publicKey(JNIEnv *e, jclass k) {
     return (*e)->NewStringUTF(e, pkhex);
 }
 
-JNIEXPORT void JNICALL Java_tv_airplay_Native_stop(JNIEnv *e, jclass k) {
+JNIEXPORT void JNICALL Java_si_abdullahf_fjair_Native_stop(JNIEnv *e, jclass k) {
     if (raop) { raop_stop_httpd(raop); raop_destroy(raop); raop = NULL; }
     if (dnssd) { dnssd_destroy(dnssd); dnssd = NULL; }
 }
 
 /* which: 0 = _raop._tcp TXT, 1 = _airplay._tcp TXT (length-prefixed key=value, DNS-SD wire format) */
-JNIEXPORT jbyteArray JNICALL Java_tv_airplay_Native_txt(JNIEnv *e, jclass k, jint which) {
+JNIEXPORT jbyteArray JNICALL Java_si_abdullahf_fjair_Native_txt(JNIEnv *e, jclass k, jint which) {
     if (!dnssd) return NULL;
     int len = 0;
     const char *p = which ? dnssd_get_airplay_txt(dnssd, &len) : dnssd_get_raop_txt(dnssd, &len);

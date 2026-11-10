@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -10 146 60" width="438" height="180">
-  <title>FJAir wordmark</title>
-  <g fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M0,0 V40 M0,0 H22 M0,19 H17 M48,0 V28 A10,10 0 0 1 28,28" stroke="#F2F2F0"/>
-    <path d="M62,40 L76,0 L90,40 M66.9,26 H85.1 M104,16 V40 M116,16 V40 M116,27 C116,20 121,16 129,16" stroke="#FF5A36"/>
-  </g>
-  <circle cx="104" cy="3" r="4.4" fill="#FF5A36"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 136 60" width="408" height="180"><title>FJAir wordmark</title><g transform="translate(6 10) scale(1) translate(0 0)"><path d="M0,0 V40 M0,0 H22 M0,19 H17 M44,0 V28 A10,10 0 0 1 24,28 M56,40 L70,0 L84,40 M60.9,26 H79.1 M98,16 V40 M110,16 V40 M110,27 C110,20 115,16 123,16" fill="none" stroke="#F2F2F0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M93.6,3 a4.4,4.4 0 1,0 8.8,0 a4.4,4.4 0 1,0 -8.8,0 Z" fill="#FF5A36"/></g></svg>

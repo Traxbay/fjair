@@ -2,7 +2,9 @@
 
 <img src="docs/brand/fjair-banner.svg" alt="FJAir" width="480">
 
-# FJAir — AirPlay screen mirroring for Android TV
+# FJAir
+
+### Screen mirroring for Android TV · works with AirPlay
 
 **Mirror your iPhone, iPad or Mac to an Android TV — no extra app on the Apple device, no cables.**
 
@@ -43,10 +45,10 @@ The TV waits on a dark home screen with its name on a pairing ticket, a pulsing 
 
 1. On your Android TV install **Downloader** (by AFTVnews) from the Play Store.
 2. In *Settings → Allow Downloader to install unknown apps* switch it **on**.
-3. Open Downloader and type this URL or this code (6322405):
+3. Open Downloader and type the code **6322405**, or this URL:
 
    ```
-   https://github.com/Traxbay/airplay-receiver-tv/releases/latest/download/AirPlay-Receiver.apk
+   https://github.com/Traxbay/fjair/releases/latest/download/FJAir.apk
    ```
 4. Press **Go**, wait for the download, then **Install** → **Open**. The app appears on your TV as **FJAir**.
 
@@ -57,7 +59,7 @@ The TV waits on a dark home screen with its name on a pairing ticket, a pulsing 
 
    ```bash
    adb connect <TV_IP>:5555
-   adb install AirPlay-Receiver.apk
+   adb install FJAir.apk
    ```
 
 ## 🎬 How to use it
@@ -88,7 +90,7 @@ AirPlay mirroring is not just an mDNS announcement: the Apple device negotiates 
  ┌────────────────────────────  Android TV  ──────────────────────────┐
  │  Advertiser.kt ── Android NSD announces the TXT records built by C  │
  │                                                                     │
- │  libairplay.so (C, NDK)                                             │
+ │  libfjair.so (C, NDK)                                               │
  │   ├─ UxPlay: RAOP/RTSP server, pair-setup/verify, FairPlay SAP,     │
  │   │          AES-CTR decrypt, RTP/NTP timing                        │
  │   ├─ libplist (LGPL) + llhttp (MIT) + OpenSSL                       │
@@ -117,8 +119,8 @@ Only OpenSSL (via the official Android NDK prefab package) is pulled in as an ex
 Requirements: JDK 17, Android SDK 34, NDK `26.1.10909125`, CMake `3.22.1`.
 
 ```bash
-git clone https://github.com/Traxbay/airplay-receiver-tv.git
-cd airplay-receiver-tv
+git clone https://github.com/Traxbay/fjair.git
+cd fjair
 ./gradlew assembleDebug      # → app/build/outputs/apk/debug/app-debug.apk
 ```
 
@@ -169,20 +171,22 @@ then run `./gradlew assembleRelease`.
 
 | | |
 |---|---|
-| <img src="docs/brand/fjair-icon.svg" width="96" alt="FJAir icon"> | **Mark** — the orange pairing ticket from the TV screen, with an "FJ" monogram. Used as the launcher icon. |
-| <img src="docs/brand/fjair-wordmark.svg" width="150" alt="FJAir wordmark"> | **Wordmark** — rounded monoline letters drawn as paths (no font licence needed): "FJ" in ink white, "Air" in signal orange. |
+| <img src="docs/brand/fjair-icon.svg" width="96" alt="FJAir icon"> | **Mark** — a TV screen showing a mirrored phone, with a signal above it: your phone's screen, on the TV, over the air. Used as the launcher icon. |
+| <img src="docs/brand/fjair-wordmark.svg" width="150" alt="FJAir wordmark"> | **Wordmark** — **FJAir**, one word, rounded monoline letters drawn as paths (no font licence needed). The orange dot of the *i* is the signal. |
+| <img src="docs/brand/fjair-logo.svg" width="150" alt="FJAir logo"> | **Logo** — mark + wordmark, used in the app header and on the TV launcher banner. |
 
 | Colour | Hex | Use |
 |---|---|---|
 | ⬛ Night | `#111111` | backgrounds |
-| 🟧 Signal orange | `#FF5A36` | ticket, accents, "Air" |
-| ⬜ Ink white | `#F2F2F0` | text, "FJ" |
+| 🟧 Signal orange | `#FF5A36` | mark, accents, the *i* dot |
+| ⬜ Ink white | `#F2F2F0` | text, wordmark |
 | 🟫 Ticket ink | `#1C0D08` | text and marks on orange |
+| 🟩 Ready green | `#3DD68C` | "ready" and "connected" status light |
 
-Source files are in [`docs/brand/`](docs/brand). The Android icon, TV banner and wordmark drawables are generated from the same shapes by `docs/brand/gen_res.py`:
+Everything in [`docs/brand/`](docs/brand) — the SVGs and the Android icon, TV banner and logo drawables — is generated from one set of shapes:
 
 ```bash
-python docs/brand/gen_res.py app/src/main/res
+python docs/brand/gen_res.py
 ```
 
 ## 📬 Contact

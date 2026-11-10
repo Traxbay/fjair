@@ -1,63 +1,112 @@
-"""Generates FJAir Android vector resources from the same shapes as docs/brand/*.svg."""
-import os, sys
+"""FJAir brand assets from one set of shapes.
 
-RES = sys.argv[1]
-BG, ORANGE, INK, WHITE = "#FF111111", "#FFFF5A36", "#FF1C0D08", "#FFF2F2F0"
-A = 'xmlns:android="http://schemas.android.com/apk/res/android"'
+Writes the SVG sources (docs/brand/*.svg) and the Android vector drawables (icon, TV banner, header logo)
+so the logo files and the app can never drift apart.
 
-def rect(x, y, w, h): return f"M{x},{y} h{w} v{h} h{-w} Z"
+    python docs/brand/gen_res.py
+"""
+import os
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+RES = os.path.join(ROOT, "app", "src", "main", "res")
+BRAND = os.path.join(ROOT, "docs", "brand")
+
+NIGHT, ORANGE, WHITE, INK = "#111111", "#FF5A36", "#F2F2F0", "#1C0D08"
+
+def rrect(x, y, w, h, r):
+    return (f"M{x + r},{y} H{x + w - r} A{r},{r} 0 0 1 {x + w},{y + r} V{y + h - r} A{r},{r} 0 0 1 {x + w - r},{y + h} "
+            f"H{x + r} A{r},{r} 0 0 1 {x},{y + h - r} V{y + r} A{r},{r} 0 0 1 {x + r},{y} Z")
 def circle(cx, cy, r): return f"M{cx - r},{cy} a{r},{r} 0 1,0 {2 * r},0 a{r},{r} 0 1,0 {-2 * r},0 Z"
-def fill(d, c, alpha=None):
-    a = f' android:fillAlpha="{alpha}"' if alpha else ""
-    return f'<path android:fillColor="{c}"{a} android:pathData="{d}"/>'
-def stroke(d, c, w):
-    return (f'<path android:strokeColor="{c}" android:strokeWidth="{w}" android:strokeLineCap="round" '
-            f'android:strokeLineJoin="round" android:pathData="{d}"/>')
+def arc(cx, cy, r):  # upper arc from 220 to 320 degrees
+    return f"M{cx - 0.766 * r:.2f},{cy - 0.643 * r:.2f} A{r},{r} 0 0 1 {cx + 0.766 * r:.2f},{cy - 0.643 * r:.2f}"
 
-TICKET = "\n".join([
-    fill("M29,34 H79 A7,7 0 0 1 86,41 V67 A7,7 0 0 1 79,74 H29 A7,7 0 0 1 22,67 V41 A7,7 0 0 1 29,34 Z", ORANGE),
-    fill(circle(70, 34, 4.5) + " " + circle(70, 74, 4.5), BG),
-    fill(" ".join(rect(69.4, y, 1.2, 2.5) for y in (41, 46, 51, 56, 61, 66)), INK, "0.35"),
-    fill(" ".join(rect(x, 42, w, 24) for x, w in ((74, 1.8), (77.2, 1), (79.6, 1.8), (82.4, 0.9))), INK),
-    stroke("M32,44 V64 M32,44 H43 M32,53.5 H40.5 M60,44 V58.5 A5.5,5.5 0 0 1 49,58.5", INK, 4.2),
-])
-WORD = "\n".join([
-    stroke("M0,0 V40 M0,0 H22 M0,19 H17 M48,0 V28 A10,10 0 0 1 28,28", WHITE, 7),
-    stroke("M62,40 L76,0 L90,40 M66.9,26 H85.1 M104,16 V40 M116,16 V40 M116,27 C116,20 121,16 129,16", ORANGE, 7),
-    fill(circle(104, 3, 4.4), ORANGE),
-])
+# Mark (108 x 108 grid, centred on 54,54): a TV screen showing a mirrored phone, with signal waves above it.
+MARK = [
+    ("fill", circle(54, 41, 2.8), ORANGE),
+    ("stroke", arc(54, 41, 8) + " " + arc(54, 41, 15), ORANGE, 3.6),
+    ("fill", rrect(30, 48, 48, 28, 6), ORANGE),
+    ("fill", rrect(47, 79, 14, 3.5, 1.75), ORANGE),
+    ("stroke", rrect(48.5, 52, 11, 20, 2.5) + " M52.5,55.5 H55.5", INK, 2.2),
+]
+# Wordmark "FJAir": one word, one colour, rounded monoline strokes; the orange i-dot is the signal.
+WORD = [
+    ("stroke", "M0,0 V40 M0,0 H22 M0,19 H17 M44,0 V28 A10,10 0 0 1 24,28 M56,40 L70,0 L84,40 M60.9,26 H79.1 "
+               "M98,16 V40 M110,16 V40 M110,27 C110,20 115,16 123,16", WHITE, 7),
+    ("fill", circle(98, 3, 4.4), ORANGE),
+]
+SQUIRCLE = [("fill", rrect(6, 6, 96, 96, 24), NIGHT)]
 
-def ticket_group(tx=0, ty=0, scale=1):
-    return (f'<group android:pivotX="54" android:pivotY="54" android:rotation="-8" android:scaleX="{scale}" '
-            f'android:scaleY="{scale}" android:translateX="{tx}" android:translateY="{ty}">\n{TICKET}\n</group>')
+def group(items, tx=0, ty=0, s=1, px=0, py=0):
+    """Scale about (px,py), then translate: Android's <group> semantics."""
+    return ("group", items, tx, ty, s, px, py)
 
-def vector(w, h, vw, vh, body):
-    return (f'<?xml version="1.0" encoding="utf-8"?>\n<!-- generated from docs/brand/*.svg -->\n'
-            f'<vector {A} android:width="{w}dp" android:height="{h}dp" '
-            f'android:viewportWidth="{vw}" android:viewportHeight="{vh}">\n{body}\n</vector>\n')
+# --- writers -----------------------------------------------------------------------------------------
 
-def write(rel, text):
-    p = os.path.join(RES, rel)
-    os.makedirs(os.path.dirname(p), exist_ok=True)
-    open(p, "w", encoding="utf-8").write(text)
+def svg_items(items):
+    out = []
+    for it in items:
+        if it[0] == "group":
+            _, sub, tx, ty, s, px, py = it
+            out.append(f'<g transform="translate({tx + px} {ty + py}) scale({s}) translate({-px} {-py})">'
+                       + "".join(svg_items(sub)) + "</g>")
+        elif it[0] == "fill":
+            out.append(f'<path d="{it[1]}" fill="{it[2]}"/>')
+        else:
+            out.append(f'<path d="{it[1]}" fill="none" stroke="{it[2]}" stroke-width="{it[3]}" '
+                       'stroke-linecap="round" stroke-linejoin="round"/>')
+    return out
 
-# adaptive icon (API 26+): flat background colour + ticket foreground
-write("drawable/ic_launcher_foreground.xml", vector(108, 108, 108, 108, ticket_group()))
-write("values/colors.xml", f'<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="fjair_bg">{BG}</color>\n</resources>\n')
-write("mipmap-anydpi-v26/ic_launcher.xml",
-      f'<?xml version="1.0" encoding="utf-8"?>\n<adaptive-icon {A}>\n'
+def vd_items(items):
+    argb = lambda c: "#FF" + c[1:]
+    out = []
+    for it in items:
+        if it[0] == "group":
+            _, sub, tx, ty, s, px, py = it
+            out.append(f'<group android:pivotX="{px}" android:pivotY="{py}" android:scaleX="{s}" android:scaleY="{s}" '
+                       f'android:translateX="{tx}" android:translateY="{ty}">' + "".join(vd_items(sub)) + "</group>")
+        elif it[0] == "fill":
+            out.append(f'<path android:fillColor="{argb(it[2])}" android:pathData="{it[1]}"/>')
+        else:
+            out.append(f'<path android:strokeColor="{argb(it[2])}" android:strokeWidth="{it[3]}" '
+                       f'android:strokeLineCap="round" android:strokeLineJoin="round" android:pathData="{it[1]}"/>')
+    return out
+
+def write(path, text):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+
+def svg(name, title, vb, w, h, items):
+    write(os.path.join(BRAND, name), f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{vb}" width="{w}" height="{h}">'
+          f"<title>{title}</title>" + "".join(svg_items(items)) + "</svg>\n")
+
+def vector(name, w, h, vw, vh, items):
+    write(os.path.join(RES, name), '<?xml version="1.0" encoding="utf-8"?>\n<!-- generated by docs/brand/gen_res.py -->\n'
+          f'<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="{w}dp" android:height="{h}dp" '
+          f'android:viewportWidth="{vw}" android:viewportHeight="{vh}">' + "".join(vd_items(items)) + "</vector>\n")
+
+# --- assets ------------------------------------------------------------------------------------------
+
+WORD_IN = [group(WORD, 6, 10)]                                       # 136 x 60, round caps not clipped
+BANNER = [("fill", rrect(0, 0, 320, 180, 0.01), NIGHT),
+          group(MARK, 46, 36, 1.25, 54, 54),                         # mark centred at (100, 90)
+          group(WORD, 150.7, 70, 0.78, 0, 20)]                       # wordmark centred on y = 90
+LOCKUP = [group(MARK, -32.8, -21.3, 0.8, 54, 54), group(WORD, 52.2, 12, 0.62, 0, 20)]  # header logo, 134 x 64
+ICON = [group(MARK, 0, 0, 1.1, 54, 54)]                             # fills the adaptive-icon safe circle
+
+svg("fjair-icon.svg", "FJAir icon", "0 0 108 108", 512, 512, SQUIRCLE + ICON)
+svg("fjair-wordmark.svg", "FJAir wordmark", "0 0 136 60", 408, 180, WORD_IN)
+svg("fjair-logo.svg", "FJAir logo", "0 0 134 64", 402, 192, LOCKUP)
+svg("fjair-banner.svg", "FJAir TV banner", "0 0 320 180", 640, 360, BANNER)
+
+vector("drawable/ic_launcher_foreground.xml", 108, 108, 108, 108, ICON)
+vector("mipmap/ic_launcher.xml", 48, 48, 108, 108, SQUIRCLE + ICON)
+vector("drawable/banner.xml", 320, 180, 320, 180, BANNER)
+vector("drawable/fjair_logo.xml", 134, 64, 134, 64, LOCKUP)
+write(os.path.join(RES, "values", "colors.xml"),
+      f'<?xml version="1.0" encoding="utf-8"?>\n<resources>\n    <color name="fjair_bg">#FF{NIGHT[1:]}</color>\n</resources>\n')
+write(os.path.join(RES, "mipmap-anydpi-v26", "ic_launcher.xml"),
+      '<?xml version="1.0" encoding="utf-8"?>\n<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">\n'
       '    <background android:drawable="@color/fjair_bg"/>\n'
       '    <foreground android:drawable="@drawable/ic_launcher_foreground"/>\n</adaptive-icon>\n')
-# legacy icon (API 21-25): rounded square + ticket
-write("mipmap/ic_launcher.xml", vector(48, 48, 108, 108,
-      fill("M30,6 H78 A24,24 0 0 1 102,30 V78 A24,24 0 0 1 78,102 H30 A24,24 0 0 1 6,78 V30 A24,24 0 0 1 30,6 Z", BG)
-      + "\n" + ticket_group()))
-# Android TV launcher banner, 320x180
-write("drawable/banner.xml", vector(320, 180, 320, 180,
-      fill(rect(0, 0, 320, 180), BG) + "\n" + ticket_group(42.5, 36, 1.3) + "\n"
-      + f'<group android:pivotX="0" android:pivotY="20" android:scaleX="0.78" android:scaleY="0.78" '
-        f'android:translateX="161.5" android:translateY="70">\n{WORD}\n</group>'))
-# wordmark for the home screen (viewport shifted so the round caps are not clipped)
-write("drawable/fjair_wordmark.xml", vector(146, 60, 146, 60,
-      f'<group android:translateX="6" android:translateY="10">\n{WORD}\n</group>'))
-print("ok")
+print("brand assets written")

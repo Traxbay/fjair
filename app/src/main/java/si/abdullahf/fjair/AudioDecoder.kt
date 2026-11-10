@@ -1,4 +1,4 @@
-package tv.airplay
+package si.abdullahf.fjair
 
 import android.media.AudioAttributes
 import android.media.AudioFormat

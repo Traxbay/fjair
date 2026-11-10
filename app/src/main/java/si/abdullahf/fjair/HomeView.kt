@@ -1,4 +1,4 @@
-package tv.airplay
+package si.abdullahf.fjair
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -29,7 +29,7 @@ import kotlin.math.sin
 @SuppressLint("ViewConstructor")
 class HomeView(ctx: Context, tvName: String, deviceId: String) : FrameLayout(ctx) {
     enum class State(val color: Int, val label: String, val pulse: Boolean) {
-        WAITING(0xFF8A8A85.toInt(), "READY", true),
+        WAITING(0xFF3DD68C.toInt(), "READY", true),
         CONNECTING(0xFFF5A524.toInt(), "CONNECTING", true),
         CONNECTED(0xFF3DD68C.toInt(), "CONNECTED", false),
         DISCONNECTED(0xFF8A8A85.toInt(), "DISCONNECTED", false),
@@ -60,12 +60,12 @@ class HomeView(ctx: Context, tvName: String, deviceId: String) : FrameLayout(ctx
         addView(LinearLayout(ctx).apply {
             orientation = LinearLayout.VERTICAL
             addView(ImageView(ctx).apply {
-                setImageResource(R.drawable.fjair_wordmark); contentDescription = "FJAir"
+                setImageResource(R.drawable.fjair_logo); contentDescription = "FJAir"
                 scaleType = ImageView.ScaleType.FIT_START; adjustViewBounds = true
-            }, LinearLayout.LayoutParams(-2, dp(34)).apply { marginStart = -dp(3) })
+            }, LinearLayout.LayoutParams(-2, dp(54)).apply { marginStart = -dp(2) })
             addView(text(14f, MUTED, regular).apply { text = "Screen mirroring for this TV · works with AirPlay" },
-                LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(2) })
-        }, lp(-2, -2, Gravity.TOP or Gravity.START).margins(48, 36, 0, 0))
+                LinearLayout.LayoutParams(-2, -2).apply { topMargin = -dp(2) })
+        }, lp(-2, -2, Gravity.TOP or Gravity.START).margins(48, 22, 0, 0))
 
         // network chip, top-right
         addView(ipText.apply {
